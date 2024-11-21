@@ -1,0 +1,26 @@
+{
+	"id": "documentfoundation-libreoffice-impress",
+	"name": "documentfoundation-libreoffice-impress",
+	"shortname": "libreoffice-impress",
+	"description": "Control a Libreoffice Impress Presentation",
+	"version": "0.0.1",
+	"license": "MIT",
+	"repository": "git+https://github.com/ekordas/companion-module-documentfoundation-libreoffice-impress.git",
+	"bugs": "https://github.com/ekordas/companion-module-documentfoundation-libreoffice-impress/issues",
+	"maintainers": [
+		{
+			"name": "Leon Eckardt",
+			"email": "lbe-dev@online.de"
+		}
+	],
+	"legacyIds": [],
+	"runtime": {
+		"type": "node18",
+		"api": "nodejs-ipc",
+		"apiVersion": "0.0.0",
+		"entrypoint": "../index.js"
+	},
+	"manufacturer": "documentfoundation",
+	"products": ["Libreoffice Impress Remote"],
+	"keywords": ["Presentation", "LibreOffice", "Impress"]
+}
