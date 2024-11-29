@@ -76,6 +76,29 @@ export function getPresetDefinitions(self) {
                 },
             ],
         },
+        GotoSlide: {
+            type: 'button',
+            category: 'Presentation Control',
+            name: 'Goto Slide',
+            style: {
+                text: 'Goto Slide',
+                color: 16777215,
+            },
+            feedbacks: [],
+            steps: [
+                {
+                    down: [
+                        {
+                            actionId: 'goto',
+                            options: {
+                                'slide': 1
+                            },
+                        },
+                    ],
+                    up: [],
+                },
+            ],
+        },
         Black: {
             type: 'button',
             category: 'Presentation Control',

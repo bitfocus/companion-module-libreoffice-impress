@@ -43,7 +43,7 @@ export function getActionDefinitions(self) {
 					id: 'slide',
 					label: 'Slide:',
 					tooltip: 'Slide to go to',
-					default: 0,
+					default: 1,
 					useVariables: true,
 				}
 			],
