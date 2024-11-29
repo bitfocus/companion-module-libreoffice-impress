@@ -1,4 +1,3 @@
-import { LoStatus, PresentationStatus} from './types.js'
 import { combineRgb } from '@companion-module/base'
 
 export function getPresetDefinitions(self) {

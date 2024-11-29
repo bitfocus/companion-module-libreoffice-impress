@@ -12,8 +12,8 @@ class DocumentfoundationLibreofficeImpress extends InstanceBase {
 		this.log('debug', 'Init')
 		this.config = config
 		this.slides = []
-		this.connectionStatus = LoStatus.Unnconnected
-		this.presentationStatus = PresentationStatus.Unnconnected
+		this.connectionStatus = LoStatus.Unconnected
+		this.presentationStatus = PresentationStatus.Unconnected
 		this.current_slide_id = 0
 
 		this.setActionDefinitions(getActionDefinitions(this))
@@ -71,11 +71,11 @@ class DocumentfoundationLibreofficeImpress extends InstanceBase {
 			})
 
 			this.socket.on('error', (err) => {
-				if (this.connectionStatus != LoStatus.Unnconnected) {
+				if (this.connectionStatus != LoStatus.Unconnected) {
 					this.log('error', 'Network error: ' + err.message)
 				}
-				this.connectionStatus = LoStatus.Unnconnected
-				this.PresentationStatus = PresentationStatus.Unnconnected
+				this.connectionStatus = LoStatus.Unconnected
+				this.PresentationStatus = PresentationStatus.Unconnected
 				this.checkFeedbacks('running')
 				this.updateStatus(InstanceStatus.ConnectionFailure, err.message)
 			})
