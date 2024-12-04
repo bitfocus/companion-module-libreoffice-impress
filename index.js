@@ -6,7 +6,7 @@ import { getPresetDefinitions  } from './presets.js'
 import { LoStatus, PresentationStatus} from './types.js'
 
 
-class DocumentfoundationLibreofficeImpress extends InstanceBase {
+class LibreofficeImpress extends InstanceBase {
 	
 	async init(config) {
 		this.log('debug', 'Init')
@@ -226,4 +226,4 @@ class DocumentfoundationLibreofficeImpress extends InstanceBase {
 	}
 }
 
-runEntrypoint(DocumentfoundationLibreofficeImpress, [])
+runEntrypoint(LibreofficeImpress, [])
