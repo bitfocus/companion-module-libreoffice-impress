@@ -147,7 +147,7 @@ export function getPresetDefinitions(self) {
             category: 'Status',
             name: 'Slide Progress',
             style: {
-                text: '$(libreoffice-impress:slide)/$(libreoffice-impress:total_slides)',
+                text: `$(${self.label}:slide)/$(${self.label}:total_slides)`,
                 color: 16777215,
             },
             feedbacks: [
@@ -172,7 +172,7 @@ export function getPresetDefinitions(self) {
             category: 'Status',
             name: 'Slide Notes',
             style: {
-                text: '$(libreoffice-impress:notes)',
+                text: `$(${self.label}:notes)`,
                 color: 16777215,
             },
             feedbacks: [],
