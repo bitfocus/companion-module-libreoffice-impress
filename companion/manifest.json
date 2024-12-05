@@ -3,7 +3,7 @@
 	"name": "Impress",
 	"shortname": "impress",
 	"description": "Control a LibreOffice Impress Presentation",
-	"version": "0.0.1",
+	"version": "0.0.0",
 	"license": "MIT",
 	"repository": "git+https://github.com/bitfocus/companion-module-libreoffice-impress.git",
 	"bugs": "https://github.com/bitfocus/companion-module-libreoffice-impress/issues",
