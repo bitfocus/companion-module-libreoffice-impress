@@ -11,6 +11,10 @@ Connect to Libre Office Impress via Network
  - Open **Slide Show &#62; Impress Remote...**
  - Enter the pin 9876 into the Companion Connection and click **Connect**
 
+## Known Issues
+
+ - Only the Presentation in the active Window can be started
+ - The variable presentation_name does not always get sent by LibreOffice Impress
 
 ## Configuration
 
