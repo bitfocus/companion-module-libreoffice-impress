@@ -16,6 +16,8 @@ class LibreofficeImpress extends InstanceBase {
 		this.presentationStatus = PresentationStatus.Unconnected
 		this.current_slide_id = 0
 
+		this.debug_log_commands = false
+
 		this.setActionDefinitions(getActionDefinitions(this))
 		this.setFeedbackDefinitions(getFeedbackDefinitions(this))
 		this.setPresetDefinitions(getPresetDefinitions(this))
@@ -98,7 +100,7 @@ class LibreofficeImpress extends InstanceBase {
 
 	update_connection(data) {
 		data = data.split('\n')
-		this.log('debug', '<-'+ data)
+		if (this.debug_log_commands) this.log('debug', '<-'+ data)
 		let i = 0
 		const DataType = {
 			Default: 0,
@@ -119,6 +121,7 @@ class LibreofficeImpress extends InstanceBase {
 				case "LO_SERVER_SERVER_PAIRED":
 					this.connectionStatus = LoStatus.Paired
 					this.updateStatus(InstanceStatus.Ok)
+					this.log('debug', 'Connected')
 					break;
 				case "LO_SERVER_INFO":
 					if (this.check_data(i+1, data.length, cmd)) {
@@ -199,11 +202,26 @@ class LibreofficeImpress extends InstanceBase {
 					}
 					break
 				default:
-					this.log('debug', 'Unknown Data: ' + data)
+					this.log('warning', 'Unknown Data: ' + data)
 			}
 			i++
 		}
 	}
+
+	send_command(cmd, ...args) {
+		if (this.socket == undefined || !this.socket.isConnected) {
+			this.log('error', 'Socket not connected :(')
+			return false
+		}
+
+		let data = cmd
+		for (let arg of args) data += "\n" + arg;
+		if (this.debug_log_commands) this.log('debug', "-> " + data)
+		let sendBuf = Buffer.from(data + "\n\n", 'latin1')
+		this.socket.send(sendBuf)
+	}
+
+
 
 	init_variables() {
 		this.setVariableDefinitions([

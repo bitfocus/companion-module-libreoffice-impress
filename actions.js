@@ -1,5 +1,17 @@
 import { LoStatus, PresentationStatus} from './types.js'
 
+function checkStatus(self, check_running=false) {
+	if (self.connectionStatus != LoStatus.Paired) {
+		self.log('error', 'Libre Office Impress not paired')
+		return false
+	}
+	if (check_running && self.presentationStatus == PresentationStatus.Stopped) {
+		self.log('error', 'Presentation not running')
+		return false
+	}
+	return true
+}
+
 export function getActionDefinitions(self) {
 	return {
 		start: {
@@ -15,23 +27,15 @@ export function getActionDefinitions(self) {
 				}
 			],
 			callback: async (action) => {
-				if (self.socket == undefined || !self.socket.isConnected) {
-					self.log('debug', 'Socket not connected :(')
+				if (!checkStatus(self)) {
 					return
 				}
-				if (self.connectionStatus != LoStatus.Paired) {
-					self.log('debug', 'Libre Office Impress not paired')
-					return
-				} else if (self.presentationStatus == PresentationStatus.Stopped) {
-					const sendBuf = Buffer.from("presentation_start\n\n\n", 'latin1')
-					self.socket.send(sendBuf)
-					self.log('debug', '-> presentation_start')
+				if (self.presentationStatus == PresentationStatus.Stopped) {
+					self.send_command("presentation_start")
 				}
 				let slide = Number(await self.parseVariablesInString(action.options.slide))
 				if (slide != 0) {
-					const sendBuf = Buffer.from("goto_slide\n" + (slide-1) + "\n\n", 'latin1')
-					self.log('debug', "-> " + sendBuf)
-					self.socket.send(sendBuf)
+					self.send_command("goto_slide", slide-1)
 				}
 			},
 		},
@@ -48,103 +52,52 @@ export function getActionDefinitions(self) {
 				}
 			],
 			callback: async (action) => {
-				if (self.socket == undefined || !self.socket.isConnected) {
-					self.log('debug', 'Socket not connected :(')
-					return
-				}
-				if (self.connectionStatus != LoStatus.Paired) {
-					self.log('debug', 'Libre Office Impress not paired')
-					return
-				} else if (self.presentationStatus == PresentationStatus.Stopped) {
-					self.log('debug', 'Presentation not running')
+				if (!checkStatus(self, true)) {
 					return
 				}
 				let slide = Number(await self.parseVariablesInString(action.options.slide))
-				if (slide != 0) {
-					const sendBuf = Buffer.from("goto_slide\n" + (slide-1) + "\n\n", 'latin1')
-					self.log('debug', "-> " + sendBuf)
-					self.socket.send(sendBuf)
-				}
+				
+				self.send_command("goto_slide", slide-1)
 			},
 		},
 		next: {
 			name: 'Next Step',
 			options: [],
 			callback: async (action) => {
-				if (self.socket == undefined || !self.socket.isConnected) {
-					self.log('debug', 'Socket not connected :(')
+				if (!checkStatus(self, true)) {
 					return
 				}
-				if (self.connectionStatus != LoStatus.Paired) {
-					self.log('debug', 'Libre Office Impress not paired')
-					return
-				} else if (self.presentationStatus == PresentationStatus.Stopped) {
-					self.log('debug', 'Impress Presentation not running')
-					return
-				}
-				const sendBuf = Buffer.from("transition_next\n\n", 'latin1')
-					self.log('debug', "-> " + sendBuf)
-					self.socket.send(sendBuf)
+				self.send_command("transition_next")
 			},
 		},
 		previous: {
 			name: 'Previous Step',
 			options: [],
 			callback: async (action) => {
-				if (self.socket == undefined || !self.socket.isConnected) {
-					self.log('debug', 'Socket not connected :(')
+				if (!checkStatus(self, true)) {
 					return
 				}
-				if (self.connectionStatus != LoStatus.Paired) {
-					self.log('debug', 'Libre Office Impress not paired '+self.connectionStatus)
-					return
-				} else if (self.presentationStatus == PresentationStatus.Stopped) {
-					self.log('debug', 'Impress Presentation not running')
-					return
-				}
-				const sendBuf = Buffer.from("transition_previous\n\n", 'latin1')
-					self.log('debug', "-> " + sendBuf)
-					self.socket.send(sendBuf)
+				self.send_command("transition_previous")
 			},
 		},
 		black: {
 			name: 'Black Screen',
 			options: [],
 			callback: async (action) => {
-				if (self.socket == undefined || !self.socket.isConnected) {
-					self.log('debug', 'Socket not connected :(')
+				if (!checkStatus(self, true)) {
 					return
 				}
-				if (self.connectionStatus != LoStatus.Paired) {
-					self.log('debug', 'Libre Office Impress not paired '+self.connectionStatus)
-					return
-				} else if (self.presentationStatus == PresentationStatus.Stopped) {
-					self.log('debug', 'Impress Presentation not running')
-					return
-				}
-				const sendBuf = Buffer.from("presentation_blank_screen\n\n", 'latin1')
-				self.log('debug', "-> " + sendBuf)
-				self.socket.send(sendBuf)
+				self.send_command("presentation_blank_screen")
 			},
 		},
 		continue: {
 			name: 'Reset Black Screen',
 			options: [],
 			callback: async (action) => {
-				if (self.socket == undefined || !self.socket.isConnected) {
-					self.log('debug', 'Socket not connected :(')
+				if (!checkStatus(self, true)) {
 					return
 				}
-				if (self.connectionStatus != LoStatus.Paired) {
-					self.log('debug', 'Libre Office Impress not paired '+self.connectionStatus)
-					return
-				} else if (self.presentationStatus == PresentationStatus.Stopped) {
-					self.log('debug', 'Impress Presentation not running')
-					return
-				}
-				const sendBuf = Buffer.from("presentation_resume\n\n", 'latin1')
-				self.log('debug', "-> " + sendBuf)
-				self.socket.send(sendBuf)
+				self.send_command("presentation_resume")
 			},
 		},
 	}
