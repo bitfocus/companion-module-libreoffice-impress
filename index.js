@@ -69,7 +69,7 @@ class LibreofficeImpress extends InstanceBase {
 
 			this.socket.on('status_change', (status, message) => {
 				if ( status == InstanceStatus.Ok ) {
-					const sendBuf = Buffer.from('LO_SERVER_CLIENT_PAIR\nCompanion\n9876\n\n', 'latin1')
+					const sendBuf = Buffer.from('LO_SERVER_CLIENT_PAIR\nCompanion\n9876\n\n', 'utf-8')
 					this.log('debug', 'Sending Connection request ')
 					this.socket.send(sendBuf)
 				} else {
@@ -88,7 +88,7 @@ class LibreofficeImpress extends InstanceBase {
 			})
 
 			this.socket.on('data', (data) => {
-				this.update_connection(data.toString())
+				this.update_connection(data.toString('utf-8'))
 			})
 		} else {
 			this.updateStatus(InstanceStatus.BadConfig)
@@ -235,8 +235,9 @@ class LibreofficeImpress extends InstanceBase {
 		let data = cmd
 		for (let arg of args) data += "\n" + arg;
 		if (this.debug_log_commands) this.log('debug', "-> " + data)
-		let sendBuf = Buffer.from(data + "\n\n", 'latin1')
+		let sendBuf = Buffer.from(data + "\n\n", 'utf-8')
 		this.socket.send(sendBuf)
+		return true
 	}
 
 
