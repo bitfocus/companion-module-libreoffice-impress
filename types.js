@@ -9,3 +9,8 @@ export const PresentationStatus = {
 	Stopped: 1,
 	Running: 2,
 }
+
+export const BlankScreenStatus = {
+	Off: 0,
+	On: 1,
+}

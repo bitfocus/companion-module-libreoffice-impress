@@ -1,4 +1,4 @@
-import { LoStatus, PresentationStatus} from './types.js'
+import { LoStatus, PresentationStatus, BlankScreenStatus} from './types.js'
 
 function checkStatus(self, check_running=false) {
 	if (self.connectionStatus != LoStatus.Paired) {
@@ -82,24 +82,47 @@ export function getActionDefinitions(self) {
 				self.send_command("transition_previous")
 			},
 		},
-		black: {
-			name: 'Black Screen',
-			options: [],
+		blank: {
+			name: 'Blank Screen',
+			options: [
+				{
+					id: 'action',
+					type: 'dropdown',
+					label: 'Action',
+					tooltip: 'Toggle does not work the first Time if Blank Screen got triggered outside Companion',
+					choices: [
+						{ id: 'on', label: 'On' },
+						{ id: 'off', label: 'Off' },
+						{ id: 'toggle', label: 'Toggle [!]' },
+					],
+					default: 'toggle',
+				}
+			],
 			callback: async (action) => {
 				if (!checkStatus(self, true)) {
 					return
 				}
-				self.send_command("presentation_blank_screen")
-			},
-		},
-		continue: {
-			name: 'Reset Black Screen',
-			options: [],
-			callback: async (action) => {
-				if (!checkStatus(self, true)) {
-					return
+				switch (action.options.action) {
+					case 'on':
+						if (self.send_command("presentation_blank_screen")) {
+							self.blankScreenStatus = BlankScreenStatus.On
+							self.checkFeedbacks('blankScreen')
+						}
+						break
+					case 'off':
+						self.send_command("presentation_resume")
+						break
+					case 'toggle':
+						if (self.blankScreenStatus == BlankScreenStatus.On) {
+							self.send_command("presentation_resume")
+						} else {
+							if (self.send_command("presentation_blank_screen")) {
+								self.blankScreenStatus = BlankScreenStatus.On
+								self.checkFeedbacks('blankScreen')
+							}
+						}
+						break
 				}
-				self.send_command("presentation_resume")
 			},
 		},
 	}

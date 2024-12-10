@@ -15,6 +15,7 @@ Connect to Libre Office Impress via Network
 
  - Only the Presentation in the active Window can be started
  - The variable presentation_name does not always get sent by LibreOffice Impress
+ - Toggle Blank Screen does not work the first Time if it got triggered outside Companion
 
 ## Configuration
 
@@ -31,8 +32,7 @@ Connect to Libre Office Impress via Network
 | Goto Slide  | Goto Slide (if Presentation started) |
 | Next Step           | Play next Transition |
 | Previous Step | Previous Transition |
-| Black Screen | Turn Screen Black |
-| Reset Black Screen | Turn off black Screen |
+| Blank Screen | Turn On/Off Blank Screen|
 
 ## Variables
 

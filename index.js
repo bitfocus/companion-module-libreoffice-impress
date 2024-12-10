@@ -3,7 +3,7 @@ import { ConfigFields } from './config.js'
 import { getActionDefinitions } from './actions.js'
 import { getFeedbackDefinitions  } from './feedbacks.js'
 import { getPresetDefinitions  } from './presets.js'
-import { LoStatus, PresentationStatus} from './types.js'
+import { LoStatus, PresentationStatus, BlankScreenStatus} from './types.js'
 
 
 class LibreofficeImpress extends InstanceBase {
@@ -14,6 +14,9 @@ class LibreofficeImpress extends InstanceBase {
 		this.slides = []
 		this.connectionStatus = LoStatus.Unconnected
 		this.presentationStatus = PresentationStatus.Unconnected
+		this.checkFeedbacks('running')
+		this.blankScreenStatus = BlankScreenStatus.Off
+		this.checkFeedbacks('blankScreen')
 		this.current_slide_id = 0
 
 		this.debug_log_commands = false
@@ -107,12 +110,6 @@ class LibreofficeImpress extends InstanceBase {
 		data = data.split('\n')
 		if (this.debug_log_commands) this.log('debug', '<-'+ data)
 		let i = 0
-		const DataType = {
-			Default: 0,
-			Image: 1,
-			Notes: 2,
-		}
-		let dataStatus = DataType.Default
 
 		while (i < data.length) {
 			let cmd = data[i]
@@ -146,6 +143,8 @@ class LibreofficeImpress extends InstanceBase {
 				case "slideshow_started":
 					this.presentationStatus = PresentationStatus.Running
 					this.checkFeedbacks('running')
+					this.blankScreenStatus = BlankScreenStatus.Off
+					this.checkFeedbacks('blankScreen')
 					if (this.check_data(i+2, data.length, cmd)) {
 						this.current_slide_id = Number(data[i+2])
 						this.setVariableValues({

@@ -1,4 +1,5 @@
 import { combineRgb } from '@companion-module/base'
+import { BlankScreenStatus, LoStatus, PresentationStatus} from './types.js'
 
 export function getPresetDefinitions(self) {
     return {
@@ -13,7 +14,7 @@ export function getPresetDefinitions(self) {
             feedbacks: [
                 {
                     feedbackId: 'running',
-                    options: {},
+                    options: { 'observe_state': PresentationStatus.Running },
                     style: {
                         bgcolor: combineRgb(0, 255, 0),
 				        color: combineRgb(0, 0, 0),
@@ -99,42 +100,30 @@ export function getPresetDefinitions(self) {
                 },
             ],
         },
-        Black: {
+        Blank: {
             type: 'button',
             category: 'Presentation Control',
-            name: 'Black Screen',
+            name: 'Blank Screen',
             style: {
-                text: 'Black',
+                text: 'Blank',
                 color: 16777215,
             },
-            feedbacks: [],
-            steps: [
+            feedbacks: [
                 {
-                    down: [
-                        {
-                            actionId: 'black',
-                            options: {},
-                        },
-                    ],
-                    up: [],
-                },
+                    feedbackId: 'blankScreen',
+                    options: { 'observe_state': BlankScreenStatus.On },
+                    style: {
+                        bgcolor: combineRgb(255, 128, 0),
+				        color: combineRgb(0, 0, 0),
+                    },
+                }
             ],
-        },
-        Continue: {
-            type: 'button',
-            category: 'Presentation Control',
-            name: 'Reset Black Screen',
-            style: {
-                text: 'Reset Black',
-                color: 16777215,
-            },
-            feedbacks: [],
             steps: [
                 {
                     down: [
                         {
-                            actionId: 'continue',
-                            options: {},
+                            actionId: 'blank',
+                            options: { 'action': 'toggle'},
                         },
                     ],
                     up: [],
@@ -153,7 +142,7 @@ export function getPresetDefinitions(self) {
             feedbacks: [
                 {
                     feedbackId: 'running',
-                    options: {},
+                    options: { 'observe_state': PresentationStatus.Running },
                     style: {
                         bgcolor: combineRgb(0, 255, 0),
 				        color: combineRgb(0, 0, 0),
