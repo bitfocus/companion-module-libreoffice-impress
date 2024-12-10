@@ -57,6 +57,11 @@ class LibreofficeImpress extends InstanceBase {
 			delete this.socket
 		}
 
+		this.slides = []
+		this.connectionStatus = LoStatus.Unconnected
+		this.presentationStatus = PresentationStatus.Unconnected
+		this.current_slide_id = 0
+
 		this.updateStatus(InstanceStatus.Connecting)
 
 		if (this.config.host) {
@@ -132,6 +137,11 @@ class LibreofficeImpress extends InstanceBase {
 				case "slideshow_finished":
 					this.presentationStatus = PresentationStatus.Stopped
 					this.checkFeedbacks('running')
+					this.current_slide_id = 0
+					this.setVariableValues({
+						slide: 0,
+						notes: ""
+					})
 					break
 				case "slideshow_started":
 					this.presentationStatus = PresentationStatus.Running
@@ -194,9 +204,17 @@ class LibreofficeImpress extends InstanceBase {
 					if (this.check_data(i+1, data.length, cmd)) {
 						this.current_slide_id = Number(data[i+1])
 						this.setVariableValues({
-							slide: this.current_slide_id +1,
-							notes: this.slides[Number(data[i+1])]["notes"]
+							slide: this.current_slide_id +1
 						})
+						if (this.current_slide_id < this.slides.length) {
+							this.setVariableValues({
+								notes: this.slides[this.current_slide_id]["notes"]
+							})
+						} else {
+							this.setVariableValues({
+								notes: ""
+							})
+						}
 
 						i++
 					}

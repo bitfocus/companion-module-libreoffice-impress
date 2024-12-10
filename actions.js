@@ -22,7 +22,8 @@ export function getActionDefinitions(self) {
 					id: 'slide',
 					label: 'Slide:',
 					tooltip: 'Slide to start the presentation (0 for current Slide)',
-					default: 0,
+					default: 1,
+					min: 0,
 					useVariables: true,
 				}
 			],
@@ -48,6 +49,7 @@ export function getActionDefinitions(self) {
 					label: 'Slide:',
 					tooltip: 'Slide to go to',
 					default: 1,
+					min: 1,
 					useVariables: true,
 				}
 			],
