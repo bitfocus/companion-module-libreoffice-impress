@@ -34,7 +34,7 @@ export function getActionDefinitions(self) {
 				if (self.presentationStatus == PresentationStatus.Stopped) {
 					self.send_command("presentation_start")
 				}
-				let slide = Number(await self.parseVariablesInString(action.options.slide))
+				let slide = action.options.slide
 				if (slide != 0) {
 					self.send_command("goto_slide", slide-1)
 				}
@@ -57,7 +57,7 @@ export function getActionDefinitions(self) {
 				if (!checkStatus(self, true)) {
 					return
 				}
-				let slide = Number(await self.parseVariablesInString(action.options.slide))
+				let slide = action.options.slide
 				
 				self.send_command("goto_slide", slide-1)
 			},
