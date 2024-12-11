@@ -29,16 +29,20 @@ class LibreofficeImpress extends InstanceBase {
 	}
 
 	async configUpdated(config) {
-		if (this.socket) {
-			this.socket.destroy()
-			delete this.socket
+		if (this.config.host != config.host || this.config.port != config.port) {
+			if (this.socket) {
+				this.socket.destroy()
+				delete this.socket
+			}
 		}
 
 		this.config = config
 
-		this.init_tcp()
+		if (!this.socket) {
+			this.init_tcp()
 
-		this.init_variables()
+			this.init_variables()
+		}
 	}
 
 	async destroy() {

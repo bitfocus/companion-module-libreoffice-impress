@@ -1,8 +1,5 @@
 import { Regex } from '@companion-module/base'
 
-const REGEX_IP_OR_HOST =
-	'/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3})$|^((([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]).)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9]))$/'
-
 export const ConfigFields = [
 	{
 		type: 'static-text',
@@ -29,15 +26,19 @@ export const ConfigFields = [
 		type: 'textinput',
 		id: 'host',
 		label: 'Target Host name or IP',
+		default: '127.0.0.1',
 		width: 8,
-		regex: REGEX_IP_OR_HOST,
+		regex: Regex.HOSTNAME,
 	},
 	{
 		type: 'number',
 		id: 'port',
 		label: 'Target Port',
+		tooltip: 'Should be 1599. Only change if you know why.',
 		width: 4,
 		default: 1599,
+		min: 1,
+		max: 65535,
 		regex: Regex.PORT,
 	},
 ]
