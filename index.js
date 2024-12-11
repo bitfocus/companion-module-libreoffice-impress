@@ -1,4 +1,4 @@
-import { InstanceBase, InstanceStatus, runEntrypoint, TCPHelper } from '@companion-module/base'
+import { InstanceBase, InstanceStatus, runEntrypoint, TCPHelper, Regex} from '@companion-module/base'
 import { ConfigFields } from './config.js'
 import { getActionDefinitions } from './actions.js'
 import { getFeedbackDefinitions  } from './feedbacks.js'
@@ -71,8 +71,16 @@ class LibreofficeImpress extends InstanceBase {
 
 		this.updateStatus(InstanceStatus.Connecting)
 
-		if (this.config.host) {
-			this.socket = new TCPHelper(this.config.host, this.config.port)
+		const regex = new RegExp(Regex.HOSTNAME.substring(1,Regex.HOSTNAME.length-1))
+
+		if (this.config.host && regex.test(this.config.host)) {
+			try {
+				this.socket = new TCPHelper(this.config.host, this.config.port)
+			} catch(err) {
+				this.updateStatus(InstanceStatus.ConnectionFailure, err.message)
+				this.log('error', 'Network  Error: ' + err.message)
+				return
+			}
 
 			this.socket.on('status_change', (status, message) => {
 				if ( status == InstanceStatus.Ok ) {
