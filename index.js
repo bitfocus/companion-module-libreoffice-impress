@@ -1,12 +1,12 @@
-import { InstanceBase, InstanceStatus, runEntrypoint, TCPHelper, Regex} from '@companion-module/base'
+import { InstanceBase, InstanceStatus, TCPHelper, Regex} from '@companion-module/base'
 import { ConfigFields } from './config.js'
 import { getActionDefinitions } from './actions.js'
 import { getFeedbackDefinitions  } from './feedbacks.js'
-import { getPresetDefinitions  } from './presets.js'
+import { getPresetStructure, getPresetDefinitions  } from './presets.js'
 import { LoStatus, PresentationStatus, BlankScreenStatus} from './types.js'
 
 
-class LibreofficeImpress extends InstanceBase {
+export default class LibreofficeImpress extends InstanceBase {
 	
 	async init(config) {
 		this.log('debug', 'Init')
@@ -23,7 +23,8 @@ class LibreofficeImpress extends InstanceBase {
 
 		this.setActionDefinitions(getActionDefinitions(this))
 		this.setFeedbackDefinitions(getFeedbackDefinitions(this))
-		this.setPresetDefinitions(getPresetDefinitions(this))
+		this.init_variables()
+		this.setPresetDefinitions(getPresetStructure(this), getPresetDefinitions(this))
 
 		await this.configUpdated(config)
 	}
@@ -41,7 +42,6 @@ class LibreofficeImpress extends InstanceBase {
 		if (!this.socket) {
 			this.init_tcp()
 
-			this.init_variables()
 		}
 	}
 
@@ -254,13 +254,13 @@ class LibreofficeImpress extends InstanceBase {
 
 
 	init_variables() {
-		this.setVariableDefinitions([
-			{name: 'Libre Office Version', variableId: 'lo_version'},
-			{name: 'Presentation Name', variableId: 'presentation_name'},
-			{name: 'Total Slides', variableId: 'total_slides'},
-			{name: 'Current Slide', variableId: 'slide'},
-			{name: 'Current Notes', variableId: 'notes'},
-		])
+		this.setVariableDefinitions({
+			lo_version: {name: 'Libre Office Version'},
+			presentation_name: {name: 'Presentation Name'},
+			total_slides: {name: 'Total Slides'},
+			slide: {name: 'Current Slide'},
+			notes: {name: 'Current Notes'},
+		})
 		
 		this.setVariableValues({ lo_version: '' })
 		this.setVariableValues({ presentation_name: '' })
@@ -273,5 +273,3 @@ class LibreofficeImpress extends InstanceBase {
 		return
 	}
 }
-
-runEntrypoint(LibreofficeImpress, [])

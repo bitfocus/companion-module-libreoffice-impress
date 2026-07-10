@@ -1,11 +1,23 @@
 import { combineRgb } from '@companion-module/base'
 import { BlankScreenStatus, LoStatus, PresentationStatus} from './types.js'
-
+export function getPresetStructure(self) {
+    return [
+        {
+            id: 'control',
+            name: 'Presentation Control',
+            definitions: ['StartPresentation', 'NextStep', 'PreviousStep', 'GotoSlide','Blank'],
+        },
+        {
+            id: 'status',
+            name: 'Status',
+            definitions: ['Progress', 'Notes'],
+        },
+    ]
+}
 export function getPresetDefinitions(self) {
     return {
 		StartPresentation: {
-            type: 'button',
-            category: 'Presentation Control',
+            type: 'simple',
             name: 'Start',
             style: {
                 text: 'Start Present',
@@ -36,8 +48,7 @@ export function getPresetDefinitions(self) {
             ],
         },
         NextStep: {
-            type: 'button',
-            category: 'Presentation Control',
+            type: 'simple',
             name: 'Next',
             style: {
                 text: 'Next',
@@ -57,8 +68,7 @@ export function getPresetDefinitions(self) {
             ],
         },
         PreviousStep: {
-            type: 'button',
-            category: 'Presentation Control',
+            type: 'simple',
             name: 'Prev',
             style: {
                 text: 'Prev',
@@ -78,8 +88,7 @@ export function getPresetDefinitions(self) {
             ],
         },
         GotoSlide: {
-            type: 'button',
-            category: 'Presentation Control',
+            type: 'simple',
             name: 'Goto Slide',
             style: {
                 text: 'Goto Slide',
@@ -101,8 +110,7 @@ export function getPresetDefinitions(self) {
             ],
         },
         Blank: {
-            type: 'button',
-            category: 'Presentation Control',
+            type: 'simple',
             name: 'Blank Screen',
             style: {
                 text: 'Blank',
@@ -132,8 +140,7 @@ export function getPresetDefinitions(self) {
         },
 
         Progress: {
-            type: 'button',
-            category: 'Status',
+            type: 'simple',
             name: 'Slide Progress',
             style: {
                 text: `$(${self.label}:slide)/$(${self.label}:total_slides)`,
@@ -157,8 +164,7 @@ export function getPresetDefinitions(self) {
             ],
         },
         Notes: {
-            type: 'button',
-            category: 'Status',
+            type: 'simple',
             name: 'Slide Notes',
             style: {
                 text: `$(${self.label}:notes)`,

@@ -1,5 +1,6 @@
 {
 	"id": "libreoffice-impress",
+	"type": "connection",
 	"name": "Impress",
 	"shortname": "impress",
 	"description": "Control a LibreOffice Impress Presentation",
