@@ -16,6 +16,7 @@ Connect to Libre Office Impress via Network
  - Only the Presentation in the active Window can be started
  - The variable presentation_name does not always get sent by LibreOffice Impress
  - Toggle Blank Screen does not work the first Time if it got triggered outside Companion
+ - Starting the Presentation may not work if editor window has no focus
 
 ## Configuration
 
@@ -33,6 +34,7 @@ Connect to Libre Office Impress via Network
 | Next Step           | Play next Transition |
 | Previous Step | Previous Transition |
 | Blank Screen | Turn On/Off Blank Screen|
+| Scroll Jump Bar | Scroll the interactive Jump Bar you can add via presets |
 
 ## Variables
 
@@ -43,6 +45,7 @@ Connect to Libre Office Impress via Network
 | total_slides      | Total Slides |
 | slide             | Current Slide |
 | notes             | Current Notes |
+| jump_offset       | offset of the Jump Bar |
 
 ## Credits
 

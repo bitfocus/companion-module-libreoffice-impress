@@ -11,13 +11,15 @@ export default class LibreofficeImpress extends InstanceBase {
 	async init(config) {
 		this.log('debug', 'Init')
 		this.config = config
-		this.slides = []
+		this.slides = {}
 		this.connectionStatus = LoStatus.Unconnected
 		this.presentationStatus = PresentationStatus.Unconnected
 		this.checkFeedbacks('running')
 		this.blankScreenStatus = BlankScreenStatus.Off
 		this.checkFeedbacks('blankScreen')
 		this.current_slide_id = 0
+		this.total_slides = 0
+		this.jump_offset = 0
 
 		this.debug_log_commands = false
 
@@ -64,7 +66,7 @@ export default class LibreofficeImpress extends InstanceBase {
 			delete this.socket
 		}
 
-		this.slides = []
+		this.slides = {}
 		this.connectionStatus = LoStatus.Unconnected
 		this.presentationStatus = PresentationStatus.Unconnected
 		this.current_slide_id = 0
@@ -146,6 +148,7 @@ export default class LibreofficeImpress extends InstanceBase {
 				case "slideshow_finished":
 					this.presentationStatus = PresentationStatus.Stopped
 					this.checkFeedbacks('running')
+					this.checkFeedbacks('preview')
 					this.current_slide_id = 0
 					this.setVariableValues({
 						slide: 0,
@@ -159,12 +162,15 @@ export default class LibreofficeImpress extends InstanceBase {
 					this.checkFeedbacks('blankScreen')
 					if (this.check_data(i+2, data.length, cmd)) {
 						this.current_slide_id = Number(data[i+2])
+						this.total_slides = Number(data[i+1]),
 						this.setVariableValues({
-							total_slides: Number(data[i+1]),
+							total_slides: this.total_slides,
 							slide: this.current_slide_id +1,
 						})
 						i += 2
 					}
+					this.checkFeedbacks('preview')
+					this.updateJumpOffset()
 					break
 				case "slideshow_info":
 					if (this.check_data(i+1, data.length, cmd)) {
@@ -176,6 +182,8 @@ export default class LibreofficeImpress extends InstanceBase {
 					if (this.check_data(i+1, data.length, cmd)) {
 						let img = ""
 						i++
+						const slideId = Number(data[i])
+						i++
 						while (i < data.length) {
 							if (data[i] == "") {
 								break
@@ -183,6 +191,15 @@ export default class LibreofficeImpress extends InstanceBase {
 							img += data[i]
 							i++
 						}
+						if ( !(slideId in this.slides) ) {
+							this.slides[slideId] = {
+								id: slideId,
+								img:"",
+								notes:""
+							}
+						}
+						this.slides[slideId].img = img
+						this.checkFeedbacks('preview')
 					}
 					break
 				case "slide_notes":
@@ -203,7 +220,14 @@ export default class LibreofficeImpress extends InstanceBase {
 						slideNotes = slideNotes.replaceAll("<body>","")
 						slideNotes = slideNotes.replaceAll("</body>","")
 						slideNotes = slideNotes.replaceAll("<br/>","\n")
-						this.slides[slideId] = {id: slideId, notes: slideNotes}
+						if (!slideId in this.slides) {
+							this.slides[slideId] = {
+								id: slideId,
+								img:"",
+								notes:""
+							}
+						}
+						this.slides[slideId].notes = slideNotes
 						if (this.current_slide_id == slideId) {
 							this.setVariableValues({
 								notes: slideNotes
@@ -228,6 +252,7 @@ export default class LibreofficeImpress extends InstanceBase {
 						}
 
 						i++
+						this.checkFeedbacks('preview')
 					}
 					break
 				default:
@@ -260,6 +285,7 @@ export default class LibreofficeImpress extends InstanceBase {
 			total_slides: {name: 'Total Slides'},
 			slide: {name: 'Current Slide'},
 			notes: {name: 'Current Notes'},
+			jump_offset: {name: 'Jump Bar offset'},
 		})
 		
 		this.setVariableValues({ lo_version: '' })
@@ -267,9 +293,21 @@ export default class LibreofficeImpress extends InstanceBase {
 		this.setVariableValues({ total_slides: 0})
 		this.setVariableValues({ slide: 0 })
 		this.setVariableValues({ notes: '' })
+		this.setVariableValues({ jump_offset: 0 })
 	}
 
 	updateFeedbacks() {
 		return
+	}
+
+	updateJumpOffset() {
+		if (!(this.presentationStatus == PresentationStatus.Running)) {
+			this.setVariableValues({ jump_offset: 0 })
+			return
+		}
+		if (this.jump_offset > this.total_slides-1) {
+			this.jump_offset = this.total_slides-1
+		}
+		this.setVariableValues({ jump_offset: this.jump_offset })
 	}
 }

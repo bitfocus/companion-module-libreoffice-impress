@@ -5,7 +5,7 @@ function checkStatus(self, check_running=false) {
 		self.log('error', 'Libre Office Impress not paired')
 		return false
 	}
-	if (check_running && self.presentationStatus == PresentationStatus.Stopped) {
+	if (check_running && !(self.presentationStatus == PresentationStatus.Running)) {
 		self.log('error', 'Presentation not running')
 		return false
 	}
@@ -123,6 +123,33 @@ export function getActionDefinitions(self) {
 						}
 						break
 				}
+			},
+		},
+		jump_scroll: {
+			name: 'Scroll Jump Bar',
+			options: [
+				{
+					type: 'number',
+					id: 'amount',
+					label: 'Amount:',
+					tooltip: 'Amount to scroll the Scroll Bar',
+					default: 5,
+					useVariables: true,
+				}
+			],
+			callback: async (action) => {
+				if (!checkStatus(self, true)) {
+					return
+				}
+				let new_value = self.jump_offset + Number(action.options.amount)
+				if (new_value < 0) {
+					new_value = 0
+				} else if (new_value > self.total_slides) {
+					return
+				}
+				
+				self.jump_offset = new_value
+				self.updateJumpOffset()
 			},
 		},
 	}
