@@ -220,7 +220,7 @@ export default class LibreofficeImpress extends InstanceBase {
 						slideNotes = slideNotes.replaceAll("<body>","")
 						slideNotes = slideNotes.replaceAll("</body>","")
 						slideNotes = slideNotes.replaceAll("<br/>","\n")
-						if (!slideId in this.slides) {
+						if ( !(slideId in this.slides) ) {
 							this.slides[slideId] = {
 								id: slideId,
 								img:"",
@@ -241,7 +241,7 @@ export default class LibreofficeImpress extends InstanceBase {
 						this.setVariableValues({
 							slide: this.current_slide_id +1
 						})
-						if (this.current_slide_id < this.slides.length) {
+						if (this.current_slide_id in this.slides) {
 							this.setVariableValues({
 								notes: this.slides[this.current_slide_id]["notes"]
 							})
